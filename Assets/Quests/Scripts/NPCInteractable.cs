@@ -5,19 +5,21 @@ using UnityEngine;
 public class NPCInteractable : MonoBehaviour, IInteractable
 {
     [SerializeField] private string interactText;
+    [SerializeField] private QuestsAndDialoguesSO questData;
     private Animator animator;
     private NPCHeadLookAt npcHeadLookAt;
-    
+    private string npcName;
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
         npcHeadLookAt = GetComponent<NPCHeadLookAt>();
+        npcName = gameObject.name;
     }
     
     public void Interact(Transform interactorTransform)
     {
-        // In the future, create a dialogue system here
-        Debug.Log("Interacting with NPC");
+        DialogueManager.Instance.StartDialogue(npcName, questData);
 
         animator.SetTrigger("Talk");
 
