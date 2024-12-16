@@ -6,6 +6,7 @@ public class QuestsAndDialoguesSO : ScriptableObject
 {
     [Header("Quest Details")]
     public string questName;
+    public string uniqueQuestID;
     public string questDescription;
 
     [Header("Character Dialogue")]

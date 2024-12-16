@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: BillsQuest
   m_EditorClassIdentifier: 
   questName: Bill's Quest
+  uniqueQuestID: dd
   questDescription: .
   dialogueLines:
   - .

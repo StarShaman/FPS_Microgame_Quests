@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: GregorysQuest
   m_EditorClassIdentifier: 
   questName: Gregory's Quest
+  uniqueQuestID: Ga5f
   questDescription: Retrieve Gregory's favorite item - his teddy bear
   dialogueLines:
   - Hey, how do you do?
