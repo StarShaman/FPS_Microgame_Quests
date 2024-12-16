@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BillsQuest
   m_EditorClassIdentifier: 
   questName: Bill's Quest
-  uniqueQuestID: dd
+  questId: Uke5
   questDescription: .
   dialogueLines:
   - .
@@ -29,7 +29,12 @@ MonoBehaviour:
   - .
   questAccepted: .
   questDeclined: .
+  questFailed: 
   questOngoing: .
   questCompleted: .
   questItemAlreadyObtainedLine: .
+  questObjective: 
+  questObjectiveCompleted: 
+  questObjectiveFailed: 
+  questObjectiveRewardClaimedAndCompleted: 
   rewardItem: key

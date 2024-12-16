@@ -19,6 +19,11 @@ public class QuestsAndDialoguesSO : ScriptableObject
     public string questCompleted;
     public string questItemAlreadyObtainedLine;
 
+    [Header("Objective (Status) Description")]
+    public string questObjective;
+    public string questObjectiveCompleted;
+    public string questObjectiveFailed;
+    public string questObjectiveRewardClaimedAndCompleted;
     [Header("Rewards")]
     public string rewardItem;
 }

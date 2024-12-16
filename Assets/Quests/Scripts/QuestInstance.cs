@@ -8,4 +8,4 @@ public class QuestInstance : MonoBehaviour
     public QuestStatus status;
 }
 
-public enum QuestStatus { NotStarted, InProgress, Completed, Failed }
+public enum QuestStatus { NotStarted, InProgress, Completed, Failed, CompletedAndClaimed }

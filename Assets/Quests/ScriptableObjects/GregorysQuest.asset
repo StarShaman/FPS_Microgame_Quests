@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GregorysQuest
   m_EditorClassIdentifier: 
   questName: Gregory's Quest
-  uniqueQuestID: Ga5f
+  questId: 3j4526g
   questDescription: Retrieve Gregory's favorite item - his teddy bear
   dialogueLines:
   - Hey, how do you do?
@@ -31,7 +31,12 @@ MonoBehaviour:
     key which looks kind of important
   questAccepted: Awesome! You have no idea how great that is
   questDeclined: Please reconsider...
-  questOngoing: 'What '
+  questFailed: 
+  questOngoing: Do you have it? Don't just stand around...
   questCompleted: Thank you so much. Here you go, you deserve it.
   questItemAlreadyObtainedLine: Oh, you already have it. Here's your reward.
+  questObjective: Find Gregory's Teddy bear
+  questObjectiveCompleted: Take the teddy bear back to Gregory.
+  questObjectiveFailed: How did that happen?!
+  questObjectiveRewardClaimedAndCompleted: Teddy would be proud.
   rewardItem: key

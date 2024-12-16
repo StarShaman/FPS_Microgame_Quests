@@ -30,10 +30,10 @@ public class DialogueUI : MonoBehaviour
             case 0: // default layout
                 QuestBtn.SetActive(true);
                 TalkBtn.SetActive(true);
-                BackBtn.SetActive(true);
+                BackBtn.SetActive(false);
                 AcceptBtn.SetActive(false);
                 DeclineBtn.SetActive(false);
-                EscapeBtn.SetActive(false);
+                EscapeBtn.SetActive(true);
                 break;
             case 1: // quest layout (accept/decline)
                 QuestBtn.SetActive(false);
