@@ -6,7 +6,7 @@ public class QuestsAndDialoguesSO : ScriptableObject
 {
     [Header("Quest Details")]
     public string questName;
-    public string uniqueQuestID;
+    public string questId;
     public string questDescription;
 
     [Header("Character Dialogue")]
@@ -14,6 +14,7 @@ public class QuestsAndDialoguesSO : ScriptableObject
     public string[] questDialogueLines;
     public string questAccepted;
     public string questDeclined;
+    public string questFailed;
     public string questOngoing;
     public string questCompleted;
     public string questItemAlreadyObtainedLine;

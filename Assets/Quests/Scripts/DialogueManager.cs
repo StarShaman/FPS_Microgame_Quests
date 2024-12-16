@@ -13,8 +13,6 @@ public class DialogueManager : MonoBehaviour
     private bool isADialogueLineComplete = false;
     private string[] currentDialogueLines;
     private string npcName;
-    private string[] defaultDialogueLines;
-    private string[] questDialogueLines;
     private QuestsAndDialoguesSO currentQuestData = null;
 
     private void Awake()
@@ -69,7 +67,7 @@ public class DialogueManager : MonoBehaviour
             if (currentDialogueIndex == 0)
             {
                 dialogueUI.SetButtonLayout(0);
-                currentDialogueLines = questDialogueLines;
+                currentDialogueLines = currentQuestData.questDialogueLines;
                 StartCoroutine(ShowDialogue());
             }
             else if (IsLastDialogueLine() && IsQuestDialogue())
@@ -82,7 +80,7 @@ public class DialogueManager : MonoBehaviour
             // Talk with them OR decline the quest
             if (currentDialogueIndex == 0)
             {
-                currentDialogueLines = defaultDialogueLines;
+                currentDialogueLines = currentQuestData.dialogueLines;
                 StartCoroutine(ShowDialogue());
             }
             else if (IsLastDialogueLine() && IsQuestDialogue())
@@ -127,14 +125,6 @@ public class DialogueManager : MonoBehaviour
             dialogueUI.SetEnterToProceedVisibility(true);
         }
     }
-    private void QuestButtonAccept()
-    {
-        
-    }
-    private void QuestButtonDecline()
-    {
-        
-    }
     public void StartDialogue(string npcName, QuestsAndDialoguesSO questData)
     {
         currentQuestData = questData;
@@ -146,16 +136,9 @@ public class DialogueManager : MonoBehaviour
         currentDialogueIndex = 0;
         isADialogueLineComplete = false;
 
-        defaultDialogueLines = questData.dialogueLines;
-        questDialogueLines = questData.questDialogueLines;
-        currentDialogueLines = defaultDialogueLines;
-        SetDialogueSet();
+        currentDialogueLines = questData.dialogueLines;
 
         StartCoroutine(ShowDialogue());
-    }
-    private void SetDialogueSet()
-    {
-
     }
     private string HandlePlayerTagInText(string line)
     {
@@ -222,19 +205,19 @@ public class DialogueManager : MonoBehaviour
     // Check whether the current dialogue is a quest dialogue
     private bool IsQuestDialogue()
     {
-        return currentDialogueLines == questDialogueLines;
+        return currentDialogueLines == currentQuestData.questDialogueLines;
     }
     // Button controls
     public void AcceptQuest()
     {
         dialogueUI.SetButtonLayout(2);
-        currentDialogueLines = questDialogueLines;
+        currentDialogueLines = new String[] { currentQuestData.questAccepted };
         StartCoroutine(ShowDialogue());
     }
     public void DeclineQuest()
     {
         dialogueUI.SetButtonLayout(2);
-        currentDialogueLines = questDialogueLines;
+        currentDialogueLines = new String[] { currentQuestData.questDeclined };
         StartCoroutine(ShowDialogue());
     }
 }
