@@ -1,9 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class QuestManager : MonoBehaviour
 {
+    // add event system to change quest log items
+    public event Action<QuestsAndDialoguesSO,QuestStatus> OnQuestStatusChanged;
+    public event Action<QuestsAndDialoguesSO> OnQuestStarted;
+    public event Action<QuestsAndDialoguesSO> OnQuestCompletedAndClaimed;
     public static QuestManager Instance { get; private set; }
 
     public List<QuestInstance> activeQuests = new List<QuestInstance>();
@@ -22,6 +27,10 @@ public class QuestManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    private void InvokeStatusChangeToQuest(QuestsAndDialoguesSO quest, QuestStatus status)
+    {
+        OnQuestStatusChanged?.Invoke(quest, status);
+    }
     public void StartQuest(QuestsAndDialoguesSO quest)
     {
         if (questStatusMap.ContainsKey(quest.questId))
@@ -36,6 +45,7 @@ public class QuestManager : MonoBehaviour
         questStatusMap[quest.questId] = QuestStatus.InProgress;
 
         questStatusPopUpUI.ShowQuestPopUpWithFadeIn(quest, 0);
+        OnQuestStarted?.Invoke(quest);
     }
 
     public void CompleteQuest(QuestsAndDialoguesSO quest)
@@ -46,6 +56,7 @@ public class QuestManager : MonoBehaviour
             instance.status = QuestStatus.Completed;
             questStatusMap[quest.questId] = QuestStatus.Completed;
             questStatusPopUpUI.ShowQuestPopUpWithFadeIn(quest, 1);
+            InvokeStatusChangeToQuest(quest, QuestStatus.Completed);
         }
     }
     public void FailQuest(QuestsAndDialoguesSO quest)
@@ -56,6 +67,7 @@ public class QuestManager : MonoBehaviour
             instance.status = QuestStatus.Failed;
             questStatusMap[quest.questId] = QuestStatus.Failed;
             questStatusPopUpUI.ShowQuestPopUpWithFadeIn(quest, 2);
+            InvokeStatusChangeToQuest(quest, QuestStatus.Failed);
         }
     }
     public void ClaimQuest(QuestsAndDialoguesSO quest)
@@ -66,6 +78,7 @@ public class QuestManager : MonoBehaviour
             instance.status = QuestStatus.CompletedAndClaimed;
             questStatusMap[quest.questId] = QuestStatus.CompletedAndClaimed;
             questStatusPopUpUI.ShowQuestPopUpWithFadeIn(quest, 3);
+            InvokeStatusChangeToQuest(quest, QuestStatus.CompletedAndClaimed);
         }
     }
     public QuestStatus GetQuestStatusByCode(string questID)

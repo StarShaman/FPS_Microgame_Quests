@@ -8,6 +8,8 @@ public class QuestsAndDialoguesSO : ScriptableObject
     public string questName;
     public string questId;
     public string questDescription;
+    public bool isMainQuest;
+    public bool isRepeatableQuest;
 
     [Header("Character Dialogue")]
     public string[] dialogueLines;
