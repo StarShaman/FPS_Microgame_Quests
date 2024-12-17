@@ -15,6 +15,8 @@ MonoBehaviour:
   questName: Gregory's Quest
   questId: 3j4526g
   questDescription: Retrieve Gregory's favorite item - his teddy bear
+  isMainQuest: 1
+  isRepeatableQuest: 0
   dialogueLines:
   - Hey, how do you do?
   - Yeah, I'm fine and what about you? [P]
