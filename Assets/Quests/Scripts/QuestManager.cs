@@ -39,13 +39,30 @@ public class QuestManager : MonoBehaviour
             return;
         }
         QuestInstance instance = new QuestInstance { questData = quest, status = QuestStatus.InProgress };
+
+        QuestLogic questLogic = GetQuestLogicForType(quest);
         activeQuests.Add(instance);
-
-        // Add to the runtime map
         questStatusMap[quest.questId] = QuestStatus.InProgress;
-
         questStatusPopUpUI.ShowQuestPopUpWithFadeIn(quest, 0);
         OnQuestStarted?.Invoke(quest);
+    }
+
+    private QuestLogic GetQuestLogicForType(QuestsAndDialoguesSO quest)
+    {
+        switch (quest.questType)
+        {
+            case QuestType.TimedKillEnemies:
+                //return new TimedKillEnemiesQuestLogic();
+            case QuestType.RetrieveItems:
+                return new RetrieveItemsQuestLogic(quest.targetItem);
+            case QuestType.Escort:
+                //return new EscortQuestLogic();
+            case QuestType.TalkToAnotherNPC:
+                //return new TalkToAnotherNPCQuestLogic();
+            default:
+                Debug.LogError("Quest type not implemented");
+                return null;
+        }
     }
 
     public void CompleteQuest(QuestsAndDialoguesSO quest)

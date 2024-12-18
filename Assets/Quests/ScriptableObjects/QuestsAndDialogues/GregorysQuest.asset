@@ -14,6 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   questName: Gregory's Quest
   questId: 3j4526g
+  questType: 1
+  timeLimit: 0
+  targetKillCount: 0
+  targetItem: {fileID: 11400000, guid: 004e33f06d00ccf449782e7b4792ff43, type: 2}
   questDescription: Retrieve Gregory's favorite item - his teddy bear
   isMainQuest: 1
   isRepeatableQuest: 0
