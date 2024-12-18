@@ -7,20 +7,12 @@ public class QuestLogItems : MonoBehaviour
     private QuestLogUI questLogUI;
     [SerializeField] private GameObject questLogItemContainer;
     [SerializeField] private GameObject questLogItemPrefab;
+    private List<QuestLogItemUI> questLogUIItems = new List<QuestLogItemUI>();
     private void Start()
     {
         questLogUI = GetComponent<QuestLogUI>();
         QuestManager.Instance.OnQuestStatusChanged += QuestManager_OnQuestStatusChanged;
         QuestManager.Instance.OnQuestStarted += QuestManager_OnQuestStarted;
-        QuestManager.Instance.OnQuestCompletedAndClaimed += QuestManager_OnQuestCompletedAndClaimed;
-    }
-
-    private void QuestManager_OnQuestCompletedAndClaimed(QuestsAndDialoguesSO questData)
-    {
-        if (questLogUI.IsQuestLogVisible())
-        {
-            RemoveQuestLogItem(questData);
-        }
     }
 
     private void QuestManager_OnQuestStarted(QuestsAndDialoguesSO questData)
@@ -33,14 +25,25 @@ public class QuestLogItems : MonoBehaviour
 
     private void QuestManager_OnQuestStatusChanged(QuestsAndDialoguesSO questData, QuestStatus status)
     {
-        foreach (Transform child in questLogItemContainer.transform)
+        if (questLogUI.IsQuestLogVisible())
         {
-            QuestLogItemUI questLogItemUI = child.GetComponent<QuestLogItemUI>();
-            if (questLogItemUI.questData == questData)
+            if (status == QuestStatus.CompletedAndClaimed || status == QuestStatus.Failed) // could be removed hypothetically if we want to keep completed quests in the log
             {
-                questLogItemUI.SetQuestData(questData);
-                questLogItemUI.SetQuestStatus(status);
-                return;
+                RemoveQuestLogItem(questData);
+            }
+            else
+            {
+                // find the quest log item and update its status
+                foreach (QuestLogItemUI questLogItem in questLogUIItems)
+                {
+                    Debug.Log(questLogItem.questData);
+                    if (questLogItem.questData == questData)
+                    {
+                        Debug.Log(questLogItem);
+                        questLogItem.UpdateQuestData(questData, status);
+                        return;
+                    }
+                }
             }
         }
     }
@@ -49,8 +52,8 @@ public class QuestLogItems : MonoBehaviour
     {
         GameObject questLogItem = Instantiate(questLogItemPrefab, questLogItemContainer.transform);
         QuestLogItemUI questLogItemUI = questLogItem.GetComponent<QuestLogItemUI>();
-        questLogItemUI.SetQuestData(questData);
-        questLogItemUI.SetQuestStatus(questStatus);
+        questLogUIItems.Add(questLogItemUI);
+        questLogItemUI.UpdateQuestData(questData, questStatus);
     }
 
     private void RemoveQuestLogItem(QuestsAndDialoguesSO questData)
@@ -59,6 +62,7 @@ public class QuestLogItems : MonoBehaviour
         {
             if (child.GetComponent<QuestLogItemUI>().questData == questData)
             {
+                questLogUIItems.Remove(child.GetComponent<QuestLogItemUI>());
                 Destroy(child.gameObject);
                 return;
             }
@@ -71,6 +75,7 @@ public class QuestLogItems : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+        questLogUIItems.Clear();
     }
     public void AddBackQuestLogItems()
     {

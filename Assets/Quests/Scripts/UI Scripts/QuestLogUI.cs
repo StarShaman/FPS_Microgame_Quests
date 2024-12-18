@@ -26,7 +26,7 @@ public class QuestLogUI : MonoBehaviour
         initialQuestLogUIContainerSizeDelta = questLogUIContainerRectTransform.sizeDelta;
         hiddenQuestLogUIContainerSizeDelta = new Vector2(100, 25);
         hiddenQuestLogUIContainerAnchoredPosition = new Vector3(0, 55.30169f, 0);
-        questLogVisibilityInfoText = questLogUIInfoContainer.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+        questLogVisibilityInfoText = questLogUIInfoContainer.GetComponentInChildren<TextMeshProUGUI>();
     }
     public void ToggleVisibility()
     {

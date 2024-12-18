@@ -8,7 +8,6 @@ public class QuestManager : MonoBehaviour
     // add event system to change quest log items
     public event Action<QuestsAndDialoguesSO,QuestStatus> OnQuestStatusChanged;
     public event Action<QuestsAndDialoguesSO> OnQuestStarted;
-    public event Action<QuestsAndDialoguesSO> OnQuestCompletedAndClaimed;
     public static QuestManager Instance { get; private set; }
 
     public List<QuestInstance> activeQuests = new List<QuestInstance>();
@@ -46,9 +45,6 @@ public class QuestManager : MonoBehaviour
                     highestCompletedOrder = Mathf.Max(highestCompletedOrder, questInstance.questData.questOrderIfMainQuest);
                 }
             }
-
-            Debug.Log($"Highest completed main quest order: {highestCompletedOrder}");
-            Debug.Log($"Current quest order: {quest.questOrderIfMainQuest}");
             // Check if the current quest can start
             if (quest.questOrderIfMainQuest > highestCompletedOrder + 1)
             {

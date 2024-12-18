@@ -10,47 +10,43 @@ public class QuestLogItemUI : MonoBehaviour
     private QuestStatus questStatus;
     [SerializeField] private TextMeshProUGUI questTypeText, questNameText, questObjectiveText, questStatusText;
     [SerializeField] private Color mainQuestColor, sideQuestColor;
-    private void Start()
-    {
-        if (questData != null)
-        {
-            SetQuestStatus(questStatus);
-            SetQuestData(questData);
-        }
-    }
-    public void SetQuestStatus(QuestStatus status)
+
+    public void UpdateQuestData(QuestsAndDialoguesSO questData, QuestStatus status)
     {
         questStatus = status;
-    }
-    public void SetQuestData(QuestsAndDialoguesSO questData)
-    {
         this.questData = questData;
         questNameText.text = questData.questName;
-        if (questStatus == QuestStatus.InProgress)
+        Color statusColor = Color.white;
+        string statusText = "";
+        string objectiveText = "";
+
+        switch (questStatus)
         {
-            questTypeText.text = questData.questName;
-            questStatusText.text = "Ongoing";
-            questStatusText.color = Color.blue;
-            questObjectiveText.text = questData.questObjective;
+            case QuestStatus.InProgress:
+                statusText = "Ongoing";
+                statusColor = Color.blue;
+                objectiveText = questData.questObjective;
+                break;
+            case QuestStatus.Completed:
+                statusText = "Completed";
+                statusColor = Color.green;
+                objectiveText = questData.questObjectiveCompleted;
+                break;
+            case QuestStatus.Failed: // left for future use, if we want to keep failed quests in the log; for CompletedAndClaimed too
+                statusText = "Failed";
+                statusColor = Color.red;
+                objectiveText = questData.questObjectiveFailed;
+                break;
+            case QuestStatus.CompletedAndClaimed:
+                statusText = "Claimed";
+                statusColor = Color.yellow;
+                objectiveText = questData.questObjectiveCompleted;
+                break;
         }
-        else if (questStatus == QuestStatus.Completed)
-        {
-            questStatusText.text = "Completed";
-            questStatusText.color = Color.green;
-            questObjectiveText.text = questData.questObjectiveCompleted;
-        }
-        else if (questStatus == QuestStatus.Failed)
-        {
-            questStatusText.text = "Failed";
-            questStatusText.color = Color.red;
-            questObjectiveText.text = questData.questObjectiveFailed;
-        }
-        else if (questStatus == QuestStatus.CompletedAndClaimed)
-        {
-            questStatusText.text = "Claimed";
-            questStatusText.color = Color.yellow;
-            questObjectiveText.text = questData.questObjectiveCompleted;
-        }
+        questTypeText.text = questData.questName;
+        questStatusText.text = statusText;
+        questStatusText.color = statusColor;
+        questObjectiveText.text = objectiveText;
 
         if (questData.isMainQuest)
         {
