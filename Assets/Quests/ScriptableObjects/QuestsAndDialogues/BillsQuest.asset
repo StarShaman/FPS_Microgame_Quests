@@ -14,7 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   questName: Bill's Quest
   questId: Uke5
+  questType: 0
+  timeLimit: 0
+  targetKillCount: 0
+  targetItem: {fileID: 0}
   questDescription: .
+  isMainQuest: 1
+  questOrderIfMainQuest: 2
+  isRepeatableQuest: 0
   dialogueLines:
   - .
   - .

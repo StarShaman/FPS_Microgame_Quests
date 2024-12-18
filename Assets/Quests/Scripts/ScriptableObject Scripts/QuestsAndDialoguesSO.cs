@@ -13,6 +13,7 @@ public class QuestsAndDialoguesSO : ScriptableObject
     public ItemSO targetItem; // for item retrieval quests
     public string questDescription;
     public bool isMainQuest;
+    public int questOrderIfMainQuest;
     public bool isRepeatableQuest;
 
     [Header("Character Dialogue")]

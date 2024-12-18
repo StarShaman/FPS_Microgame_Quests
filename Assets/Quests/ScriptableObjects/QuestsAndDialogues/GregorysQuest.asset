@@ -20,6 +20,7 @@ MonoBehaviour:
   targetItem: {fileID: 11400000, guid: 004e33f06d00ccf449782e7b4792ff43, type: 2}
   questDescription: Retrieve Gregory's favorite item - his teddy bear
   isMainQuest: 1
+  questOrderIfMainQuest: 1
   isRepeatableQuest: 0
   dialogueLines:
   - Hey, how do you do?

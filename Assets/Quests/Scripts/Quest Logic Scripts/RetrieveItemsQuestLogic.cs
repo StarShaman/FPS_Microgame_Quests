@@ -6,7 +6,7 @@ public class RetrieveItemsQuestLogic : QuestLogic
 {
     private ItemSO targetItem;
     private QuestInstance questInstance;
-
+    private bool isItemRetrieved = false;
     public RetrieveItemsQuestLogic(ItemSO targetItem)
     {
         this.targetItem = targetItem;
@@ -19,8 +19,9 @@ public class RetrieveItemsQuestLogic : QuestLogic
 
     public override void UpdateLogic()
     {
-        if (InventorySystem.Instance.HasItem(targetItem))
+        if (InventorySystem.Instance.HasItem(targetItem) && !isItemRetrieved)
         {
+            isItemRetrieved = true;
             QuestManager.Instance.CompleteQuest(questInstance.questData);
         }
     }

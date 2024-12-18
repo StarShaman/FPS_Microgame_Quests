@@ -33,16 +33,51 @@ public class QuestManager : MonoBehaviour
     }
     public void StartQuest(QuestsAndDialoguesSO quest)
     {
+        if (quest.isMainQuest)
+        {
+            // Find the highest `questOrderIfMainQuest` from completed and claimed main quests
+            int highestCompletedOrder = 0;
+
+            foreach (var questInstance in activeQuests)
+            {
+                if (questInstance.questData.isMainQuest &&
+                    questInstance.status == QuestStatus.CompletedAndClaimed)
+                {
+                    highestCompletedOrder = Mathf.Max(highestCompletedOrder, questInstance.questData.questOrderIfMainQuest);
+                }
+            }
+
+            Debug.Log($"Highest completed main quest order: {highestCompletedOrder}");
+            Debug.Log($"Current quest order: {quest.questOrderIfMainQuest}");
+            // Check if the current quest can start
+            if (quest.questOrderIfMainQuest > highestCompletedOrder + 1)
+            {
+                Debug.LogWarning($"Cannot start quest {quest.questName}. Previous main quest(s) have not been completed and claimed.");
+                return;
+            }
+        }
         if (questStatusMap.ContainsKey(quest.questId))
         {
-            Debug.LogWarning("Quest already started");
+            Debug.LogWarning($"Quest {quest.questName} already started.");
             return;
         }
-        QuestInstance instance = new QuestInstance { questData = quest, status = QuestStatus.InProgress };
 
+        GameObject questGameObject = new GameObject($"QuestInstance_{quest.questName}");
+        QuestInstance instance = questGameObject.AddComponent<QuestInstance>();
+
+        // Initializing quest instance
+        instance.questData = quest;
+        instance.status = QuestStatus.InProgress;
+
+        // Assigning and initializing the quest logic
         QuestLogic questLogic = GetQuestLogicForType(quest);
+        instance.Initialize(questLogic);
+
+        // Tracking active quest and update quest status
         activeQuests.Add(instance);
         questStatusMap[quest.questId] = QuestStatus.InProgress;
+
+        // Trigger UI and events
         questStatusPopUpUI.ShowQuestPopUpWithFadeIn(quest, 0);
         OnQuestStarted?.Invoke(quest);
     }

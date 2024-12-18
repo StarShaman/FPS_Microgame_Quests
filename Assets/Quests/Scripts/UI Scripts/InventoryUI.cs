@@ -17,12 +17,10 @@ public class InventoryUI : MonoBehaviour
             if (i < items.Count)
             {
                 itemBoxes[i].sprite = items[i].sprite;
-                itemBoxes[i].color = Color.white; // Set visible
             }
             else
             {
                 itemBoxes[i].sprite = null;
-                itemBoxes[i].color = Color.clear; // Hide empty boxes
             }
         }
     }
