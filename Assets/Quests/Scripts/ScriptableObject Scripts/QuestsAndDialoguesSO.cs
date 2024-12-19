@@ -8,13 +8,15 @@ public class QuestsAndDialoguesSO : ScriptableObject
     public string questName;
     public string questId;
     public QuestType questType;
-    public float timeLimit; // for timed quests
-    public int targetKillCount; // for kill quests
-    public ItemSO targetItem; // for item retrieval quests
     public string questDescription;
     public bool isMainQuest;
     public int questOrderIfMainQuest;
     public bool isRepeatableQuest;
+
+    [Header("Extra Variables")]
+    public float timeLimit; // for timed quests, could be renamed to a generic name if you want to add more types of quests
+    public int targetKillCount; // for kill quests
+    public ItemSO targetItem; // for item retrieval quests
 
     [Header("Character Dialogue")]
     public string[] dialogueLines;
@@ -31,6 +33,8 @@ public class QuestsAndDialoguesSO : ScriptableObject
     public string questObjectiveCompleted;
     public string questObjectiveFailed;
     public string questObjectiveRewardClaimedAndCompleted;
-    [Header("Rewards")]
-    public string rewardItem;
+
+    [Header("Rewards")] // can be expanded to include more types of rewards, like experience points, etc.
+    public ItemSO rewardItemSO;
+    public GameObject rewardItemPrefab;
 }

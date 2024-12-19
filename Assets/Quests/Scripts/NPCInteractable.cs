@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.FPS.Gameplay;
 using UnityEngine;
 
 public class NPCInteractable : MonoBehaviour, IInteractable
@@ -20,6 +21,7 @@ public class NPCInteractable : MonoBehaviour, IInteractable
     public void Interact(Transform interactorTransform)
     {
         DialogueManager.Instance.StartDialogue(npcName, questData);
+        interactorTransform.GetComponent<PlayerCharacterController>().Freeze();
 
         animator.SetTrigger("Talk");
 
@@ -34,5 +36,9 @@ public class NPCInteractable : MonoBehaviour, IInteractable
     public Transform GetTransform()
     {
         return transform;
+    }
+    public QuestsAndDialoguesSO GetQuestData()
+    {
+        return questData;
     }
 }

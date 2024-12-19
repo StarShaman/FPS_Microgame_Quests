@@ -458,8 +458,8 @@ MonoBehaviour:
   questNameText: {fileID: 7597874083860621355}
   questObjectiveText: {fileID: 1008172217839089021}
   questStatusText: {fileID: 8174453550046352904}
-  mainQuestColor: {r: 0.745283, g: 0, b: 0, a: 0}
-  sideQuestColor: {r: 0.49056602, g: 0.016197944, b: 0.2560959, a: 0}
+  mainQuestColor: {r: 0.9433962, g: 0.013349922, b: 0.013349922, a: 1}
+  sideQuestColor: {r: 0.063412234, g: 0.3542228, b: 0.8962264, a: 1}
 --- !u!1 &7566789734788646675
 GameObject:
   m_ObjectHideFlags: 0

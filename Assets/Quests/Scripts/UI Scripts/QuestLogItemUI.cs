@@ -43,7 +43,6 @@ public class QuestLogItemUI : MonoBehaviour
                 objectiveText = questData.questObjectiveCompleted;
                 break;
         }
-        questTypeText.text = questData.questName;
         questStatusText.text = statusText;
         questStatusText.color = statusColor;
         questObjectiveText.text = objectiveText;

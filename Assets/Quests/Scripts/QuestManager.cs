@@ -1,13 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.FPS.Gameplay;
 using UnityEngine;
 
 public class QuestManager : MonoBehaviour
 {
-    // add event system to change quest log items
     public event Action<QuestsAndDialoguesSO,QuestStatus> OnQuestStatusChanged;
     public event Action<QuestsAndDialoguesSO> OnQuestStarted;
+    public event EventHandler<QuestsAndDialoguesSO> OnMainQuestCantStartDueToPreviousQuestNotCompleted;
     public static QuestManager Instance { get; private set; }
 
     public List<QuestInstance> activeQuests = new List<QuestInstance>();
@@ -48,7 +49,7 @@ public class QuestManager : MonoBehaviour
             // Check if the current quest can start
             if (quest.questOrderIfMainQuest > highestCompletedOrder + 1)
             {
-                Debug.LogWarning($"Cannot start quest {quest.questName}. Previous main quest(s) have not been completed and claimed.");
+                OnMainQuestCantStartDueToPreviousQuestNotCompleted?.Invoke(this, quest);
                 return;
             }
         }
@@ -61,19 +62,15 @@ public class QuestManager : MonoBehaviour
         GameObject questGameObject = new GameObject($"QuestInstance_{quest.questName}");
         QuestInstance instance = questGameObject.AddComponent<QuestInstance>();
 
-        // Initializing quest instance
         instance.questData = quest;
         instance.status = QuestStatus.InProgress;
 
-        // Assigning and initializing the quest logic
         QuestLogic questLogic = GetQuestLogicForType(quest);
         instance.Initialize(questLogic);
 
-        // Tracking active quest and update quest status
         activeQuests.Add(instance);
         questStatusMap[quest.questId] = QuestStatus.InProgress;
 
-        // Trigger UI and events
         questStatusPopUpUI.ShowQuestPopUpWithFadeIn(quest, 0);
         OnQuestStarted?.Invoke(quest);
     }
@@ -127,6 +124,19 @@ public class QuestManager : MonoBehaviour
             questStatusMap[quest.questId] = QuestStatus.CompletedAndClaimed;
             questStatusPopUpUI.ShowQuestPopUpWithFadeIn(quest, 3);
             InvokeStatusChangeToQuest(quest, QuestStatus.CompletedAndClaimed);
+            GiveOutReward(quest);
+        }
+    }
+    private void GiveOutReward(QuestsAndDialoguesSO quest)
+    {
+        // Give out rewards
+        if (quest.rewardItemSO != null)
+        {
+            InventorySystem.Instance.AddItem(quest.rewardItemSO);
+        }
+        if (quest.rewardItemPrefab != null)
+        {
+            //Instantiate(quest.rewardItemPrefab, PlayerCharacterController.Instance.player.transform.position, Quaternion.identity);
         }
     }
     public QuestStatus GetQuestStatusByCode(string questID)

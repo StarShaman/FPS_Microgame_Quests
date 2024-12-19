@@ -14,6 +14,8 @@ public class QuestStatusPopUpUI : MonoBehaviour
     [SerializeField] private float fadeInDuration = 1f;
     [SerializeField] private float fadeOutDuration = 1f;
     [SerializeField] private float displayDuration = 2f;
+    [SerializeField] AudioSource audioSource;
+    [SerializeField] private AudioClip questOngoingClip, questCompletedClip, questFailedClip, questClaimedClip;
     public static QuestStatusPopUpUI Instance { get; private set; }
     private void Awake()
     {
@@ -44,27 +46,41 @@ public class QuestStatusPopUpUI : MonoBehaviour
                 questStatusText.text = "Quest Ongoing";
                 questStatusText.color = Color.blue;
                 questObjectiveText.text = quest.questObjective;
+                PlayAudio(questOngoingClip);
                 break;
             case 1:
                 questStatusText.text = "Quest Completed";
                 questStatusText.color = Color.green;
                 questObjectiveText.text = quest.questObjectiveCompleted;
+                PlayAudio(questCompletedClip);
                 break;
             case 2:
                 questStatusText.text = "Quest Failed";
                 questStatusText.color = Color.red;
                 questObjectiveText.text = quest.questObjectiveFailed;
+                PlayAudio(questFailedClip);
                 break;
             case 3:
                 questStatusText.text = "Quest Claimed";
                 questStatusText.color = Color.yellow;
                 questObjectiveText.text = quest.questObjectiveRewardClaimedAndCompleted;
+                PlayAudio(questClaimedClip);
                 break;
             default:
                 break;
         }
         questTitleText.text = quest.questName;
         StartCoroutine(FadeIn());
+    }
+
+    private void PlayAudio(AudioClip clip)
+    {
+        if (audioSource != null && clip != null)
+        {
+            audioSource.Stop();
+            audioSource.clip = clip;
+            audioSource.Play();
+        }
     }
 
     private IEnumerator FadeIn()

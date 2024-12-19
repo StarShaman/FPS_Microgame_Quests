@@ -28,6 +28,22 @@ public class DialogueManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    private void Start()
+    {
+        QuestManager.Instance.OnMainQuestCantStartDueToPreviousQuestNotCompleted += QuestManager_OnMainQuestCantStartDueToPreviousQuestNotCompleted;
+    }
+
+    private void QuestManager_OnMainQuestCantStartDueToPreviousQuestNotCompleted(object sender, QuestsAndDialoguesSO quest)
+    {
+        if (currentCoroutine != null)
+        {
+            StopCoroutine(currentCoroutine);
+        }
+        currentDialogueLines = new string[] { "You cannot start this quest yet. Look for other quests to complete." };
+        Debug.Log("You cannot start this quest yet. Look for other quests to complete.");
+        currentCoroutine = StartCoroutine(ShowDialogue());
+    }
+
     private void Update()
     {
         if (dialogueUI.IsContainerVisible())
@@ -63,42 +79,41 @@ public class DialogueManager : MonoBehaviour
 
     private void HandleDialogueInput()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        Alpha1nput();
+        Alpha2Input();
+        Alpha3Input();
+        EnterInput();
+    }
+
+    private void EnterInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Return) && enterToProceedTextVisible)
         {
-            // Ask about the quest button
-            if (currentDialogueIndex == 0 && !isQuestChoiceDialogue)
+            ShowNextDialogue();
+        }
+    }
+
+    private void Alpha3Input()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            if (IsLastDialogueLine() || currentDialogueIndex == 0)
             {
-                dialogueUI.SetButtonLayout(0);
-                if (QuestManager.Instance.GetQuestStatusByCode(currentQuestData.questId) == QuestStatus.InProgress)
+                if (!IsQuestDialogue())
                 {
-                    currentDialogueLines = new string[] { currentQuestData.questOngoing };
+                    dialogueUI.Hide();
                 }
-                else if (QuestManager.Instance.GetQuestStatusByCode(currentQuestData.questId) == QuestStatus.Completed)
-                {
-                    currentDialogueLines = new string[] { currentQuestData.questCompleted };
-                    QuestManager.Instance.ClaimQuest(currentQuestData);
-                    // NPC will give out rewards here
-                }
-                else if (QuestManager.Instance.GetQuestStatusByCode(currentQuestData.questId) == QuestStatus.Failed)
-                {
-                    currentDialogueLines = new string[] { currentQuestData.questFailed };
-                }
-                else if (QuestManager.Instance.GetQuestStatusByCode(currentQuestData.questId) == QuestStatus.CompletedAndClaimed)
-                {
-                    currentDialogueLines = new string[] { currentQuestData.questItemAlreadyObtainedLine };
-                }
-                else // Quest not started
-                {
-                    currentDialogueLines = currentQuestData.questDialogueLines;
-                }
-                currentCoroutine = StartCoroutine(ShowDialogue());
             }
-            else if (IsLastDialogueLine() && IsQuestDialogue()) // Accept the quest button
+            else // Back button to go to the previous dialogue line 
             {
-                HandleQuestChoice(true);
+                ShowPreviousDialogue();
             }
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
+    }
+
+    private void Alpha2Input()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             // Talk with them button
             if (currentDialogueIndex == 0 && !isQuestChoiceDialogue)
@@ -111,41 +126,47 @@ public class DialogueManager : MonoBehaviour
                 HandleQuestChoice(false);
             }
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
+    }
+
+    private void Alpha1nput()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            if (IsLastDialogueLine() || currentDialogueIndex == 0)
+            // Ask about the quest button
+            if (currentDialogueIndex == 0 && !isQuestChoiceDialogue)
             {
-                if (IsQuestDialogue() && currentDialogueIndex != 0)
-                    return;
-                // Exit the dialogue button
-                dialogueUI.Hide();
+                dialogueUI.SetButtonLayout(0);
+                switch (QuestManager.Instance.GetQuestStatusByCode(currentQuestData.questId))
+                {
+                    case QuestStatus.InProgress:
+                        currentDialogueLines = new[] { currentQuestData.questOngoing };
+                        break;
+                    case QuestStatus.Completed:
+                        currentDialogueLines = new[] { currentQuestData.questCompleted };
+                        QuestManager.Instance.ClaimQuest(currentQuestData);
+                        break;
+                    case QuestStatus.Failed:
+                        currentDialogueLines = new[] { currentQuestData.questFailed };
+                        break;
+                    case QuestStatus.CompletedAndClaimed:
+                        currentDialogueLines = new[] { currentQuestData.questItemAlreadyObtainedLine };
+                        break;
+                    default:
+                        currentDialogueLines = currentQuestData.questDialogueLines;
+                        break;
+                }
+                currentCoroutine = StartCoroutine(ShowDialogue());
             }
-            else // Back button to go to the previous dialogue line 
+            else if (IsLastDialogueLine() && IsQuestDialogue()) // Accept the quest button
             {
-                ShowPreviousDialogue();
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            if (enterToProceedTextVisible)
-            {
-                ShowNextDialogue();
+                HandleQuestChoice(true);
             }
         }
     }
 
-
     private void HandleEnterToProceedText()
     {
-        // fix constantly setting the visibility of the enter to proceed text
-        if (IsLastDialogueLine())
-        {
-            dialogueUI.SetEnterToProceedVisibility(false);
-        }
-        else
-        {
-            dialogueUI.SetEnterToProceedVisibility(true);
-        }
+        dialogueUI.SetEnterToProceedVisibility(!IsLastDialogueLine());
     }
     public void StartDialogue(string npcName, QuestsAndDialoguesSO questData)
     {
@@ -186,7 +207,7 @@ public class DialogueManager : MonoBehaviour
 
         foreach (char c in dialogueLine)
         {
-            dialogueUI.AddCharacterToText(c); // Adding one character at a time
+            dialogueUI.AddCharacterToText(c);
             yield return new WaitForSeconds(0.01f);
         }
 
@@ -232,17 +253,14 @@ public class DialogueManager : MonoBehaviour
             isCoroutineRunning = false;
         }
     }
-    // Checking if the last dialogue line has been reached
     private bool IsLastDialogueLine()
     {
         return currentDialogueIndex == currentDialogueLines.Length - 1;
     }
-    // Checking if the current dialogue line is not the first and last
     private bool IsNotFirstOrLastDialogueLine()
     {
         return currentDialogueIndex != 0 && currentDialogueIndex != currentDialogueLines.Length - 1;
     }
-    // Checking whether the current dialogue is a quest dialogue
     private bool IsQuestDialogue()
     {
         return currentDialogueLines == currentQuestData.questDialogueLines;

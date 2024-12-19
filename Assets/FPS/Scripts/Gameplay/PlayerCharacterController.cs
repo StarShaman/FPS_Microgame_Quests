@@ -7,6 +7,7 @@ namespace Unity.FPS.Gameplay
     [RequireComponent(typeof(CharacterController), typeof(PlayerInputHandler), typeof(AudioSource))]
     public class PlayerCharacterController : MonoBehaviour
     {
+        private bool isFrozen = false;
         [Header("References")] [Tooltip("Reference to the main camera used for the player")]
         public Camera PlayerCamera;
 
@@ -264,8 +265,18 @@ namespace Unity.FPS.Gameplay
             }
         }
 
+        public void Freeze()
+        {
+            isFrozen = true;
+        }
+        public void UnFreeze()
+        {
+            isFrozen = false;
+        }
+
         void HandleCharacterMovement()
         {
+            if (isFrozen) return;
             // horizontal character rotation
             {
                 // rotate the transform with the input speed around its local Y axis
@@ -413,6 +424,7 @@ namespace Unity.FPS.Gameplay
 
         void UpdateCharacterHeight(bool force)
         {
+            if (isFrozen) return;
             // Update height instantly
             if (force)
             {
