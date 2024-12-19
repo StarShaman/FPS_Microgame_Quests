@@ -1,15 +1,19 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class RetrieveItemsQuestLogic : QuestLogic
 {
-    private ItemSO targetItem;
+    private Dictionary<ItemSO, int> targetItems;
     private QuestInstance questInstance;
-    private bool isItemRetrieved = false;
-    public RetrieveItemsQuestLogic(ItemSO targetItem)
+    private bool IsLogicOnlyAppliedOnce = false;
+    public RetrieveItemsQuestLogic(ItemSO[] targetItems, int[] howMuchEachOne)
     {
-        this.targetItem = targetItem;
+        for (int i = 0; i < targetItems.Length; i++)
+        {
+            this.targetItems.Add(targetItems[i], howMuchEachOne[i]);
+        }
     }
 
     public override void Initialize(QuestInstance questInstance)
@@ -19,15 +23,31 @@ public class RetrieveItemsQuestLogic : QuestLogic
 
     public override void UpdateLogic()
     {
-        if (InventorySystem.Instance.HasItem(targetItem) && !isItemRetrieved)
+        if (!IsLogicOnlyAppliedOnce && AreAllItemsRetrieved())
         {
-            isItemRetrieved = true;
+            IsLogicOnlyAppliedOnce = true;
             QuestManager.Instance.CompleteQuest(questInstance.questData);
+            foreach(var item in targetItems)
+            {
+                InventorySystem.Instance.RemoveItem(item.Key);
+            }
         }
+    }
+
+    private bool AreAllItemsRetrieved()
+    {
+        foreach (var item in targetItems)
+        {
+            if (!InventorySystem.Instance.HasItem(item.Key))
+            {
+                return false;
+            }
+        }
+        return false;
     }
 
     public override bool IsQuestCompleted()
     {
-        return InventorySystem.Instance.HasItem(targetItem);
+        return AreAllItemsRetrieved();
     }
 }

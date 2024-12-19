@@ -82,7 +82,7 @@ public class QuestManager : MonoBehaviour
             case QuestType.TimedKillEnemies:
                 //return new TimedKillEnemiesQuestLogic();
             case QuestType.RetrieveItems:
-                return new RetrieveItemsQuestLogic(quest.targetItem);
+                return new RetrieveItemsQuestLogic(quest.targetItems, quest.targetItemsHowMuchEachOne);
             case QuestType.Escort:
                 //return new EscortQuestLogic();
             case QuestType.TalkToAnotherNPC:

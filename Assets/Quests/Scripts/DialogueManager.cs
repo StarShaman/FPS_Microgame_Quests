@@ -16,7 +16,7 @@ public class DialogueManager : MonoBehaviour
     private QuestsAndDialoguesSO currentQuestData = null;
     private Coroutine currentCoroutine;
     private bool isCoroutineRunning = false;
-
+    private string[] onMainQuestCantStartDueToPreviousQuestNotCompletedDialogueLines = new string[] { "You cannot start this quest yet. Look for other quests to complete." };
     private void Awake()
     {
         if (Instance == null)
@@ -39,8 +39,9 @@ public class DialogueManager : MonoBehaviour
         {
             StopCoroutine(currentCoroutine);
         }
-        currentDialogueLines = new string[] { "You cannot start this quest yet. Look for other quests to complete." };
-        Debug.Log("You cannot start this quest yet. Look for other quests to complete.");
+        currentDialogueLines = onMainQuestCantStartDueToPreviousQuestNotCompletedDialogueLines;
+
+        currentCoroutine = null;
         currentCoroutine = StartCoroutine(ShowDialogue());
     }
 

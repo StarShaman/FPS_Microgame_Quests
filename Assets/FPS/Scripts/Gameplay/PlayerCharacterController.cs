@@ -424,7 +424,6 @@ namespace Unity.FPS.Gameplay
 
         void UpdateCharacterHeight(bool force)
         {
-            if (isFrozen) return;
             // Update height instantly
             if (force)
             {

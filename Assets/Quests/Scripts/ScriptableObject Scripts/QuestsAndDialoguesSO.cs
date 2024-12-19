@@ -16,8 +16,8 @@ public class QuestsAndDialoguesSO : ScriptableObject
     [Header("Extra Variables")]
     public float timeLimit; // for timed quests, could be renamed to a generic name if you want to add more types of quests
     public int targetKillCount; // for kill quests
-    public ItemSO targetItem; // for item retrieval quests
-
+    public ItemSO[] targetItems; // for item retrieval quests
+    public int[] targetItemsHowMuchEachOne; // for item retrieval quests
     [Header("Character Dialogue")]
     public string[] dialogueLines;
     public string[] questDialogueLines;
